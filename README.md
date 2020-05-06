@@ -1,14 +1,10 @@
-**Status:** Archive (code is provided as-is, no updates expected)
+PVND
 
-## [Exploration by Random Network Distillation](https://arxiv.org/abs/1810.12894) ##
+Enmin Zhao, Kai LI, Junliang Xing
 
+UCAS, CASIA
 
-Yuri Burda*, Harri Edwards*, Amos Storkey, Oleg Klimov<br/>
-&#42;equal contribution
-
-OpenAI<br/>
-University of Edinburgh
-
+Our code is based on Open AI RND(https://github.com/openai/random-network-distillation).
 
 ### Installation and Usage
 The following command should train an RND agent on Montezuma's Revenge
