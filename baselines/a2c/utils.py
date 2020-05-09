@@ -163,7 +163,7 @@ def discount_with_dones_equal(rewards,dones):
     r = 0
     k=0
     for i in range(len(rewards)):
-        if rewards[i]>0:
+        if rewards[i]==100 or rewards[i]==300 or rewards[i]==1000 or rewards[i]==3000:
             #discounted[i,0]=1
             for j in range(k,i+1):
                 if i>k:

@@ -384,16 +384,17 @@ class PpoAgent(object):
             fd.update({self.stochpol.ph_mean:self.stochpol.ob_rms.mean, self.stochpol.ph_std:self.stochpol.ob_rms.var**0.5})
             fd.update({self.stochpol.pvalues:np.zeros((1024,1))})
             ret = tf.get_default_session().run(self._losses+[self._train], feed_dict=fd)[:-1]
-            
-            obstrue,rewardstrue= self.stochpol.cwp.sample_batch(32)
+           
+            obstrue,rewardstrue= self.stochpol.cwp.sample_batch(33)
             if obstrue is None:
                 obstrue=None
             else:
                 fd1={}
-                fd1[self.stochpol.ph_ob[None]] = obstrue
+                
+                fd1[self.stochpol.ph_ob[None]] = obstrue[None]
                 fd1.update({self.stochpol.ph_mean: self.stochpol.ob_rms.mean,
                        self.stochpol.ph_std: self.stochpol.ob_rms.var ** 0.5,
-                       self.stochpol.pvalues: rewardstrue})
+                       self.stochpol.pvalues: rewardstrue[1:33]})
                 hll = tf.get_default_session().run(self.stochpol.aux_loss, fd1)
             
             

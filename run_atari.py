@@ -16,6 +16,7 @@ from vec_env import VecFrameStack
 
 def train(*, env_id, num_env, hps, num_timesteps, seed):
     npzeri=np.zeros(12500)
+    npbest_r=np.zeros(12500)
     venv = VecFrameStack(
         make_atari_env(env_id, num_env, seed, wrapper_kwargs=dict(),
                        start_index=num_env * MPI.COMM_WORLD.Get_rank(),
@@ -81,7 +82,9 @@ def train(*, env_id, num_env, hps, num_timesteps, seed):
             counter += 1
             if counter>2:
                 npzeri[counter]=int(info['update']['eprew'])
-            np.save('pvnd_1.npy',npzeri)
+                npbest_r[counter]=int(info['update']['best_ret'])
+            np.save('pvnd_6_1.npy',npzeri)
+            np.save('pnvd_best_6_1',npbest_r)
         if agent.I.stats['tcount'] > num_timesteps:
             break
 

@@ -166,7 +166,7 @@ class compare_with_past(object):
     def update_buffer(self, trajectory):
         positive_reward = False
         for (ob, a, r) in trajectory:
-            if r > 0:
+            if r >0:
                 positive_reward = True
                 break
         if positive_reward:
