@@ -2,7 +2,7 @@ import tensorflow as tf
 from baselines.common.distributions import make_pdtype
 from collections import OrderedDict
 from gym import spaces
-from baselines.common.Compare_with_past import compare_with_past
+#from baselines.common.Compare_with_past import compare_with_past
 
 
 def canonical_dtype(orig_dt):
@@ -23,7 +23,7 @@ class StochasticPolicy(object):
         self.pvalues=tf.placeholder(dtype=tf.float32,shape=(None, None), name='pvalues')
         self.ph_ob_keys = []
         self.ph_ob_dtypes = {}
-        self.cwp=compare_with_past()
+        #self.cwp=compare_with_past()
         shapes = {}
         if isinstance(ob_space, spaces.Dict):
             assert isinstance(ob_space.spaces, OrderedDict)

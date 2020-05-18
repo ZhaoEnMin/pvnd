@@ -83,8 +83,8 @@ def train(*, env_id, num_env, hps, num_timesteps, seed):
             if counter>2:
                 npzeri[counter]=int(info['update']['eprew'])
                 npbest_r[counter]=int(info['update']['best_ret'])
-            np.save('pvnd_6_1.npy',npzeri)
-            np.save('pnvd_best_6_1',npbest_r)
+            np.save('pvndsoft1e4129_3.npy',npzeri)
+            np.save('pnvdsoft1e4129_best_3',npbest_r)
         if agent.I.stats['tcount'] > num_timesteps:
             break
 

@@ -184,7 +184,7 @@ class CnnGruPolicy(StochasticPolicy):
         self.feat_var = tf.reduce_mean(tf.nn.moments(X_r, axes=[0])[1])
         self.max_feat = tf.reduce_max(tf.abs(X_r))
         self.int_rew = tf.reduce_mean(tf.square(tf.stop_gradient(X_r) - X_r_hat), axis=-1, keep_dims=True)
-        self.int_rew = tf.reshape(self.int_rew, (self.sy_nenvs, self.sy_nsteps - 1))
+        self.int_rew1 = tf.reshape(self.int_rew, (self.sy_nenvs, self.sy_nsteps - 1))
 
         noisy_targets = tf.stop_gradient(X_r)
         self.aux_loss = tf.reduce_mean(tf.square(noisy_targets +tf.sqrt(self.pvalues/512) - X_r_hat), -1)

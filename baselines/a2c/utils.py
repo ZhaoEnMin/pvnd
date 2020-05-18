@@ -162,13 +162,15 @@ def discount_with_dones_equal(rewards,dones):
     discounted = np.zeros((len(rewards),1))
     r = 0
     k=0
+    io=0
     for i in range(len(rewards)):
-        if rewards[i]==100 or rewards[i]==300 or rewards[i]==1000 or rewards[i]==3000:
+        if rewards[i]>0:
             #discounted[i,0]=1
             for j in range(k,i+1):
                 if i>k:
-                    discounted[j,0]=pow((j-k),3)/pow((i-k),3)
+                    discounted[j,0]=pow((j-k),3)/pow((i-k),3)+io
             k=i+1
+            io=io+1
     return discounted
 
 def find_trainable_variables(key):

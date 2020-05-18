@@ -87,7 +87,7 @@ class compare_with_past(object):
     
     def __init__(self, fn_reward=np.sign, fn_obs=None,
             n_env=32, batch_size=128, n_update=4, 
-            max_steps=int(1e5), gamma=0.99, stack=1):#fn_reward ==np.sign
+            max_steps=int(1e4), gamma=0.99, stack=1):#fn_reward ==np.sign
 
         self.obsbuffer=RunningMeanStd()
         self.rewbuffer=RunningMeanStd()
@@ -123,11 +123,7 @@ class compare_with_past(object):
         obsave=[]
         rsave=[]
 
-        if self.stack > 1:
-            ob_shape = list(trajectory[0][0].shape)
-            nc = ob_shape[-1]
-            ob_shape[-1] = nc*self.stack
-            stacked_ob = np.zeros(ob_shape, dtype=trajectory[0][0].dtype)
+
         for (ob, action, reward) in trajectory:
             if ob is not None:
                 x = self.fn_obs(ob) if self.fn_obs is not None else ob
@@ -142,26 +138,25 @@ class compare_with_past(object):
                 dones.append(False)
         dones[len(dones)-1]=True
         returns = discount_with_dones_equal(rewards, dones)
-        #obsofrew=np.zeros((len(dones),1))
-        #for ik in range(int(len(dones)/2048)+1):
-        #    if ik<int(len(dones)/2048):
-        #        obsofrew[ik*2048:ik*2048+2048,0]=np.array(self.sess.run(self.int_rew,feed_dict={self.obss:np.array(obs[ik*2048:ik*2048+2048])}))
-        #    else:
-        #        if ik*2048<len(dones):
-          
-        #            obsofrew[ik*2048:len(dones),0]=np.array(self.sess.run(self.int_rew,feed_dict={self.obss:np.array(obs[ik*2048:len(dones)])}))
+        obsofrew=np.zeros((len(dones),1))
+        for ik in range(int(len(dones)/2048)+1):
+            if ik<int(len(dones)/2048):
+                obsofrew[ik*2048:ik*2048+2048,0]=np.array(self.sess.run(self.int_rew,feed_dict={self.obss:np.array(obs[ik*2048:ik*2048+2048])}))
+            else:
+                if ik*2048<len(dones):
+                    obsofrew[ik*2048:len(dones),0]=np.array(self.sess.run(self.int_rew,feed_dict={self.obss:np.array(obs[ik*2048:len(dones)])}))
         
-        #obssortrew=np.sort(obsofrew,0)
-        #obla=obsofrew.shape[0]
-        #obmax025=obssortrew[int(0.75*obla)]
-        #i=0
-        #rmax=0
+        obssortrew=np.sort(obsofrew,0)
+        obla=obsofrew.shape[0]
+        obmax025=obssortrew[int(0.75*obla)]
+        i=0
+        rmax=0
         for (ob, action, R) in list(zip(obs, actions, returns)):
-            #if obmax025<obsofrew[i] and R -rmax>0.1:
-            #    self.buffer.add(ob,action, R)
-            #rmax=R
-            #i=i+1
-            self.buffer.add(ob,action, R)
+            if obmax025<obsofrew[i] and R -rmax>0.1:
+                self.buffer.add(ob,action, R)
+            rmax=R
+            i=i+1
+            #self.buffer.add(ob,action, R)
 
     def update_buffer(self, trajectory):
         positive_reward = False
@@ -171,12 +166,7 @@ class compare_with_past(object):
                 break
         if positive_reward:
             self.add_episode(trajectory)
-            self.total_steps.append(len(trajectory))
-            self.total_rewards.append(np.sum([x[2] for x in trajectory]))
-            while np.sum(self.total_steps) > self.max_steps and len(self.total_steps) > 1:
-                self.total_steps.pop(0)
-                self.total_rewards.pop(0)
-
+            
 
     def num_steps(self):
         return len(self.buffer)
